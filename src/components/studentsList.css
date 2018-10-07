@@ -1,0 +1,26 @@
+.Header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  overflow: hidden;
+  width: 100%;
+  height: 85px;
+  display: flex;
+  flex-direction: row;
+  padding: 20px;
+  background-color: #3f89ca;
+}
+
+.Card {
+  margin: 15px !important;
+  height: 95px !important;
+  width: 410px !important;
+}
+
+.CardGroup {
+  position:absolute; top:80px; height: 100%; left:0px; right:0px; overflow:auto;
+  padding-bottom: 85px;
+  margin-top: 15px !important;
+  justify-content: center;
+}
