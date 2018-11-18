@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Button, Input, Icon, Card, Loader, Dimmer } from 'semantic-ui-react'
+import { Button, Input, Icon, Card, Loader, Dimmer, Message } from 'semantic-ui-react'
 
 import getStudentsData from '../redux/actionCreators';
 import './studentsList.css';
@@ -10,8 +10,7 @@ class StudentsList extends Component {
   state = {
     studentsData: [],
     sortOnName: 'desc',
-    sortOnMarks: 'desc',
-    isLoader: true
+    sortOnMarks: 'desc'
   }  
   componentDidMount() {
     //Calling action to get student data
@@ -26,7 +25,7 @@ class StudentsList extends Component {
       studentsData.push(nextProps.studentsData[key])
     }
     this.studentsData = studentsData;
-    this.setState({ studentsData, isLoader: false });
+    this.setState({ studentsData });
   }
 
   searchText = (e) => {
@@ -78,8 +77,10 @@ class StudentsList extends Component {
     let { sortOnMarks } = this.state;
     if (sortOnMarks === 'desc') {
       studentsData = this.state.studentsData.sort((a, b) => {
-        const aMarks = a.marks.s1 + a.marks.s2 + a.marks.s3;
-        const bMarks = b.marks.s1 + b.marks.s2 + b.marks.s3;
+        const aMarks = this.totalMarks(a.marks);
+        // const aMarks = a.marks.s1 + a.marks.s2 + a.marks.s3;
+        // const bMarks = b.marks.s1 + b.marks.s2 + b.marks.s3;
+        const bMarks = this.totalMarks(b.marks);
         return (aMarks - bMarks);
       });
 
@@ -87,8 +88,10 @@ class StudentsList extends Component {
 
     } else {
       studentsData = this.state.studentsData.sort((a, b) => {
-        const aMarks = a.marks.s1 + a.marks.s2 + a.marks.s3;
-        const bMarks = b.marks.s1 + b.marks.s2 + b.marks.s3;
+        const aMarks = this.totalMarks(a.marks);
+        // const aMarks = a.marks.s1 + a.marks.s2 + a.marks.s3;
+        // const bMarks = b.marks.s1 + b.marks.s2 + b.marks.s3;
+        const bMarks = this.totalMarks(b.marks);
         return (bMarks - aMarks);
       });
 
@@ -99,10 +102,10 @@ class StudentsList extends Component {
   }
 
   // Total marks calculation
-  totalMarks = (marks) => (marks.s1 + marks.s2 + marks.s3);
+  totalMarks = (marks) => Object.values(marks).reduce((sum, mark) => (sum+mark), 0);
 
   render() {
-    const { studentsData, isLoader, sortOnName, sortOnMarks }= this.state;
+    const { studentsData, sortOnName, sortOnMarks }= this.state;
     return (
       <div className="App">
       <div className="Header">
@@ -132,14 +135,11 @@ class StudentsList extends Component {
             ))
           }
         </Card.Group>
-        <Dimmer active={isLoader} inverted>
-          <Loader />
-        </Dimmer>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => ({ studentsData: state });
+const mapStateToProps = (state) => ({ studentsData: state.studentsData });
 
 export default connect(mapStateToProps, { getStudentsData })(StudentsList);;
